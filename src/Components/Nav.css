@@ -1,0 +1,14 @@
+nav{
+    display: flex;
+    align-items: center;
+    height: 8vh;
+    background-color: rgb(33, 57, 77);
+}
+
+.link{
+    width: 15%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    list-style: none;
+}
