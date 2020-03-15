@@ -7,7 +7,9 @@ const Input = (props) => (
         </div>
         <input 
         type="text" aria-label={props.title} 
-        class="form-control" />
+        class="form-control"
+        title={props.title}
+        onChange={props.handleChange} />
     </div>
 )
 

@@ -1,5 +1,14 @@
 .Producto {
     text-align: center;
     justify-content: center;
-    width: 400px;
+    display: flex;
+    width: 100%;
+  }
+  .input-wrapper{
+      width: 30%;
+      margin-right: 2%;
+  }
+
+  .table-wrapper{
+      width: 70%;
   }
