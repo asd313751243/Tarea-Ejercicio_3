@@ -8,7 +8,8 @@ class Proveedor extends Component {
       super(props)
       this.state ={
         itemsProv: [],
-        Id_Proveedor: -1
+        histories_prod: [],
+        Id_Proveedor_update: -1
       }
     }
 
@@ -23,7 +24,8 @@ class Proveedor extends Component {
 
     FillProvTable = () =>{
       this.setState({
-        itemsProv: JSON.parse(localStorage.getItem("HisProv"))
+        itemsProv: JSON.parse(localStorage.getItem("HisProv")),
+        histories_prod: JSON.parse(localStorage.getItem('HisProd'))
     })
     }
 
@@ -41,7 +43,8 @@ class Proveedor extends Component {
       Id_Proveedor: ID,
       Nombre_Proveedor: this.state.Nombre_Proveedor,
       Direccion: this.state.Direccion,
-      Numero_Telefono: this.state.Numero_Telefono
+      Numero_Telefono: this.state.Numero_Telefono,
+      Estado_Proveedor: "Activo"
     }
 
     if(localStorage.getItem('HisProv') == null){
@@ -51,10 +54,10 @@ class Proveedor extends Component {
     }
     else{
       let histories = JSON.parse(localStorage.getItem('HisProv'));
-      if(this.state.Id_Proveedor != -1){
-        histories[this.state.Id_Proveedor].Nombre_Proveedor = this.state.Nombre_Proveedor;
-        histories[this.state.Id_Proveedor].Direccion = this.state.Direccion;
-        histories[this.state.Id_Proveedor].Numero_Telefono = this.state.Numero_Telefono;
+      if(this.state.Id_Proveedor_update != -1){
+        histories[this.state.Id_Proveedor_update].Nombre_Proveedor = this.state.Nombre_Proveedor;
+        histories[this.state.Id_Proveedor_update].Direccion = this.state.Direccion;
+        histories[this.state.Id_Proveedor_update].Numero_Telefono = this.state.Numero_Telefono;
       }
       else{
         histories.push(history);
@@ -62,7 +65,7 @@ class Proveedor extends Component {
       localStorage.setItem("HisProv", JSON.stringify(histories));
     }
     this.setState({
-      Id_Proveedor: -1,
+      Id_Proveedor_update: -1,
       Nombre_Proveedor: "",
       Direccion: "",
       Numero_Telefono: ""
@@ -71,15 +74,49 @@ class Proveedor extends Component {
   }
 
   ToUpdateProv = (val) =>{
-
-    this.setState({
-        Id_Proveedor: this.state.itemsProv[val].Id_Proveedor,
+    
+    if(this.state.itemsProv[val].Estado_Proveedor == "Activo"){
+      this.setState({
+        Id_Proveedor_update: this.state.itemsProv[val].Id_Proveedor,
         Nombre_Proveedor: this.state.itemsProv[val].Nombre_Proveedor,
         Direccion: this.state.itemsProv[val].Direccion,
         Numero_Telefono: this.state.itemsProv[val].Numero_Telefono
     })
+    }
+    else{
+      alert("El registro esta eliminado");
+      return null
+    }
+
     //alert(this.state.Nombre_Producto);
   }  
+
+  ToDeleteProv = (id) =>{
+    let evaluar = true;
+    for(var i=0; i<this.state.histories_prod.length; i++){
+      if(this.state.histories_prod[i].Id_Proveedor == this.state.itemsProv[id].Id_Proveedor 
+        && this.state.histories_prod[i].Estado_Producto == "Activo"){
+        evaluar = false;
+      }
+    }
+    if(evaluar == false){
+      alert("El registro tiene dependencias");
+      return null
+    }
+    else{
+      if(this.state.itemsProv[id].Estado_Proveedor == "Activo"){
+        this.state.itemsProv[id].Estado_Proveedor = "Eliminado"
+        localStorage.setItem("HisProv", JSON.stringify(this.state.itemsProv));
+        this.componentDidMount();
+      }
+      else{
+        alert("El registro esta eliminado");
+        return null
+      }
+    }
+
+  }
+
 
   ToPreviewProv = (e) =>{
     /*this.setState = ({
@@ -111,6 +148,7 @@ class Proveedor extends Component {
                         <th>Nombre_Proveedor</th>
                         <th>Direccion</th>
                         <th>Numero_Telefono</th>
+                        <th>Estado_Proveedor</th>
                    </thead>
                    <tbody>
                    {this.state.itemsProv.map((item) => (
@@ -119,6 +157,7 @@ class Proveedor extends Component {
                         <td>{ item.Nombre_Proveedor }</td>
                         <td>{ item.Direccion }</td>
                         <td>{ item.Numero_Telefono }</td>
+                        <td>{ item.Estado_Proveedor }</td>
                         <td><button type="button" class="btn btn-info"onClick={()=>this.ToUpdateProv(item.Id_Proveedor)}>Actualizar</button></td>
                         <td><button type="button" class="btn btn-danger"onClick={()=>this.ToDeleteProv(item.Id_Proveedor)}>Eliminar</button></td>
                         </tr>

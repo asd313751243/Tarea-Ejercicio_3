@@ -8,7 +8,9 @@ class Producto extends Component {
         super(props)
         this.state ={
             itemsProd: [],
-            Id_Producto: -1
+            histories_prov: [],
+            filtrar: [],
+            Id_Producto_update: -1
         }
     }
 
@@ -21,9 +23,12 @@ class Producto extends Component {
         }
     }
 
+
     FillProdTable = () =>{
+        
         this.setState({
-            itemsProd: JSON.parse(localStorage.getItem("HisProd"))
+            itemsProd: JSON.parse(localStorage.getItem("HisProd")),
+            histories_prov: JSON.parse(localStorage.getItem('HisProv'))
         })
     }
 
@@ -42,7 +47,8 @@ class Producto extends Component {
             Nombre_Producto: this.state.Nombre_Producto,
             Descripcion: this.state.Descripcion,
             Fecha_Vencimiento: this.state.Fecha_Vencimiento,
-            Id_Proveedor: this.state.Id_Proveedor
+            Id_Proveedor: this.state.Id_Proveedor,
+            Estado_Producto: "Activo"
         }
 
         if(localStorage.getItem('HisProd') == null){
@@ -52,11 +58,11 @@ class Producto extends Component {
         }
         else{
             let histories = JSON.parse(localStorage.getItem('HisProd'));
-            if(this.state.Id_Producto != -1){
-                histories[this.state.Id_Producto].Nombre_Producto = this.state.Nombre_Producto;
-                histories[this.state.Id_Producto].Descripcion = this.state.Descripcion;
-                histories[this.state.Id_Producto].Fecha_Vencimiento = this.state.Fecha_Vencimiento;
-                histories[this.state.Id_Producto].Id_Proveedor = this.state.Id_Proveedor;
+            if(this.state.Id_Producto_update != -1){
+                histories[this.state.Id_Producto_update].Nombre_Producto = this.state.Nombre_Producto;
+                histories[this.state.Id_Producto_update].Descripcion = this.state.Descripcion;
+                histories[this.state.Id_Producto_update].Fecha_Vencimiento = this.state.Fecha_Vencimiento;
+                histories[this.state.Id_Producto_update].Id_Proveedor = this.state.Id_Proveedor;
             }
             else{
                 histories.push(history);
@@ -64,7 +70,7 @@ class Producto extends Component {
             localStorage.setItem("HisProd", JSON.stringify(histories));
         }
         this.setState({
-            Id_Producto: -1,
+            Id_Producto_update: -1,
             Nombre_Producto: "",
             Descripcion: "",
             Fecha_Vencimiento: "",
@@ -74,25 +80,50 @@ class Producto extends Component {
     }
 
     ToUpdateProd = (val) =>{
-
-        this.setState({
-            Id_Producto: this.state.itemsProd[val].Id_Producto,
-            Nombre_Producto: this.state.itemsProd[val].Nombre_Producto,
-            Descripcion: this.state.itemsProd[val].Descripcion,
-            Fecha_Vencimiento: this.state.itemsProd[val].Fecha_Vencimiento,
-            Id_Proveedor: this.state.itemsProd[val].Id_Proveedor
-        })
+        if(this.state.itemsProd.Estado_Producto == "Activo"){
+            this.setState({
+                Id_Producto_update: this.state.itemsProd[val].Id_Producto,
+                Nombre_Producto: this.state.itemsProd[val].Nombre_Producto,
+                Descripcion: this.state.itemsProd[val].Descripcion,
+                Fecha_Vencimiento: this.state.itemsProd[val].Fecha_Vencimiento,
+                Id_Proveedor: this.state.itemsProd[val].Id_Proveedor
+            })
+        }
+        else{
+            return null;
+        }
+    
         //alert(this.state.Nombre_Producto);
+    }
+
+    ToDeleteProd = (val) =>{
+        if(this.state.itemsProd[val].Estado_Producto == "Activo"){
+            this.state.itemsProd[val].Estado_Producto = "Eliminado";
+            localStorage.setItem("HisProd", JSON.stringify(this.state.itemsProd));
+            this.componentDidMount();
+        }
+        else{
+            return null;
+        }
     }
 
     ToPreviewProd = (e) =>{
         /*this.setState = ({
             [e.target.title]: e.target.value
         })*/
+        if(this.state.filtrar.length == 0){
+            for(var i=0; i<this.state.histories_prov.length; i++){
+                if(this.state.histories_prov[i].Estado_Proveedor == "Activo"){
+                    this.state.filtrar.push(this.state.histories_prov[i]);
+                }
+            }
+        }
+
         let partialState = {};
         partialState[e.target.title] = e.target.value;
         this.setState(partialState);
     }
+
 
   render(){
     return (
@@ -103,7 +134,12 @@ class Producto extends Component {
                     <Input title="Nombre_Producto" handleChange={this.ToPreviewProd} type="text" data={this.state.Nombre_Producto}></Input>
                     <Input title="Descripcion" handleChange={this.ToPreviewProd} type="text" data={this.state.Descripcion}></Input>
                     <Input title="Fecha_Vencimiento" handleChange={this.ToPreviewProd} type="date" data={this.state.Fecha_Vencimiento}></Input>
-                    <Input title="Id_Proveedor" handleChange={this.ToPreviewProd} type="number" data={this.state.Id_Proveedor}></Input>
+                    <select className="form-control" title="Id_Proveedor" onChange={this.ToPreviewProd}>
+                        <option>--Seleccionar--</option>
+                        {this.state.filtrar.map((item) =>(
+                            <option value={item.Id_Proveedor}>{item.Id_Proveedor} : {item.Nombre_Proveedor} </option>
+                        ))} 
+                    </select>
                     <div className="button-wrapper">
                         <button type="submit" className="btn btn-secondary">Ejecutar</button>
                     </div>
@@ -117,6 +153,7 @@ class Producto extends Component {
                         <th>Descripcion</th>
                         <th>Fecha_Vencimiento</th>
                         <th>Id_Proveedor</th>
+                        <th>Estado_Producto</th>
                    </thead>
                    <tbody>
                    {this.state.itemsProd.map((item) => (
@@ -126,8 +163,9 @@ class Producto extends Component {
                         <td>{ item.Descripcion }</td>
                         <td>{ item.Fecha_Vencimiento }</td>
                         <td>{ item.Id_Proveedor }</td>
+                        <td>{ item.Estado_Producto }</td>
                         <td><button type="button" class="btn btn-info" onClick={()=>this.ToUpdateProd(item.Id_Producto)}>Actualizar</button></td>
-                        <td><button type="button" class="btn btn-danger" onClick={()=>this.ToDelete(item.Id_Producto)}>Eliminar</button></td>
+                        <td><button type="button" class="btn btn-danger" onClick={()=>this.ToDeleteProd(item.Id_Producto)}>Eliminar</button></td>
                         </tr>
                    ))}
                    </tbody>
