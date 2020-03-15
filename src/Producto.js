@@ -134,8 +134,8 @@ class Producto extends Component {
                     <Input title="Nombre_Producto" handleChange={this.ToPreviewProd} type="text" data={this.state.Nombre_Producto}></Input>
                     <Input title="Descripcion" handleChange={this.ToPreviewProd} type="text" data={this.state.Descripcion}></Input>
                     <Input title="Fecha_Vencimiento" handleChange={this.ToPreviewProd} type="date" data={this.state.Fecha_Vencimiento}></Input>
-                    <select className="form-control" title="Id_Proveedor" onChange={this.ToPreviewProd}>
-                        <option>--Seleccionar--</option>
+                    <select className="form-control" title="Id_Proveedor" onChange={this.ToPreviewProd} required>
+                        <option value="" disabled selected hidden>---Seleccionar---</option>
                         {this.state.filtrar.map((item) =>(
                             <option value={item.Id_Proveedor}>{item.Id_Proveedor} : {item.Nombre_Proveedor} </option>
                         ))} 
