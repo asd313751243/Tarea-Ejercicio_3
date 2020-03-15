@@ -7,7 +7,8 @@ class Proveedor extends Component {
     constructor(props){
       super(props)
       this.state ={
-        itemsProv: []
+        itemsProv: [],
+        Id_Proveedor: -1
       }
     }
 
@@ -26,15 +27,6 @@ class Proveedor extends Component {
     })
     }
 
-  ToTableProv = (e) =>{
-    /*this.setState = ({
-        [e.target.title]: e.target.value
-    })*/
-    let partialState = {};
-    partialState[e.target.title] = e.target.value;
-    this.setState(partialState);
-  }
-
   ToHistoryProv = (e) =>{
     e.preventDefault();
     let ID;
@@ -46,7 +38,7 @@ class Proveedor extends Component {
     }
 
     let history = {
-      Id_Producto: ID,
+      Id_Proveedor: ID,
       Nombre_Proveedor: this.state.Nombre_Proveedor,
       Direccion: this.state.Direccion,
       Numero_Telefono: this.state.Numero_Telefono
@@ -59,10 +51,43 @@ class Proveedor extends Component {
     }
     else{
       let histories = JSON.parse(localStorage.getItem('HisProv'));
-      histories.push(history);
+      if(this.state.Id_Proveedor != -1){
+        histories[this.state.Id_Proveedor].Nombre_Proveedor = this.state.Nombre_Proveedor;
+        histories[this.state.Id_Proveedor].Direccion = this.state.Direccion;
+        histories[this.state.Id_Proveedor].Numero_Telefono = this.state.Numero_Telefono;
+      }
+      else{
+        histories.push(history);
+      }
       localStorage.setItem("HisProv", JSON.stringify(histories));
     }
+    this.setState({
+      Id_Proveedor: -1,
+      Nombre_Proveedor: "",
+      Direccion: "",
+      Numero_Telefono: ""
+    })
     this.componentDidMount();
+  }
+
+  ToUpdateProv = (val) =>{
+
+    this.setState({
+        Id_Proveedor: this.state.itemsProv[val].Id_Proveedor,
+        Nombre_Proveedor: this.state.itemsProv[val].Nombre_Proveedor,
+        Direccion: this.state.itemsProv[val].Direccion,
+        Numero_Telefono: this.state.itemsProv[val].Numero_Telefono
+    })
+    //alert(this.state.Nombre_Producto);
+  }  
+
+  ToPreviewProv = (e) =>{
+    /*this.setState = ({
+        [e.target.title]: e.target.value
+    })*/
+    let partialState = {};
+    partialState[e.target.title] = e.target.value;
+    this.setState(partialState);
   }
 
   render(){
@@ -71,10 +96,10 @@ class Proveedor extends Component {
         <div className="input-wrapper">
           <h1>Proveedor</h1>
           <form onSubmit={this.ToHistoryProv}>
-            <Input title="Nombre_Proveedor" handleChange={this.ToTableProv} type="text"></Input>
-            <Input title="Direccion" handleChange={this.ToTableProv} type="text"></Input>
-            <Input title="Numero_Telefono" handleChange={this.ToTableProv} type="number"></Input>
-            <div>
+            <Input title="Nombre_Proveedor" handleChange={this.ToPreviewProv} type="text" data={this.state.Nombre_Proveedor}></Input>
+            <Input title="Direccion" handleChange={this.ToPreviewProv} type="text" data={this.state.Direccion}></Input>
+            <Input title="Numero_Telefono" handleChange={this.ToPreviewProv} type="number" data={this.state.Numero_Telefono}></Input>
+            <div className="button-wrapper">
               <button type="submit" class="btn btn-secondary">Ejecutar</button>
             </div>
           </form>
@@ -94,8 +119,8 @@ class Proveedor extends Component {
                         <td>{ item.Nombre_Proveedor }</td>
                         <td>{ item.Direccion }</td>
                         <td>{ item.Numero_Telefono }</td>
-                        <td><button type="button" class="btn btn-info">Actualizar</button></td>
-                        <td><button type="button" class="btn btn-danger">Eliminar</button></td>
+                        <td><button type="button" class="btn btn-info"onClick={()=>this.ToUpdateProv(item.Id_Proveedor)}>Actualizar</button></td>
+                        <td><button type="button" class="btn btn-danger"onClick={()=>this.ToDeleteProv(item.Id_Proveedor)}>Eliminar</button></td>
                         </tr>
                    ))}
                    </tbody>

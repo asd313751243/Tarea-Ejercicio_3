@@ -7,7 +7,8 @@ class Producto extends Component {
     constructor(props){
         super(props)
         this.state ={
-            itemsProd: []
+            itemsProd: [],
+            Id_Producto: -1
         }
     }
 
@@ -51,13 +52,40 @@ class Producto extends Component {
         }
         else{
             let histories = JSON.parse(localStorage.getItem('HisProd'));
-            histories.push(history);
+            if(this.state.Id_Producto != -1){
+                histories[this.state.Id_Producto].Nombre_Producto = this.state.Nombre_Producto;
+                histories[this.state.Id_Producto].Descripcion = this.state.Descripcion;
+                histories[this.state.Id_Producto].Fecha_Vencimiento = this.state.Fecha_Vencimiento;
+                histories[this.state.Id_Producto].Id_Proveedor = this.state.Id_Proveedor;
+            }
+            else{
+                histories.push(history);
+            }
             localStorage.setItem("HisProd", JSON.stringify(histories));
         }
+        this.setState({
+            Id_Producto: -1,
+            Nombre_Producto: "",
+            Descripcion: "",
+            Fecha_Vencimiento: "",
+            Id_Proveedor: ""
+        });
         this.componentDidMount();
     }
 
-    ToTableProd = (e) =>{
+    ToUpdateProd = (val) =>{
+
+        this.setState({
+            Id_Producto: this.state.itemsProd[val].Id_Producto,
+            Nombre_Producto: this.state.itemsProd[val].Nombre_Producto,
+            Descripcion: this.state.itemsProd[val].Descripcion,
+            Fecha_Vencimiento: this.state.itemsProd[val].Fecha_Vencimiento,
+            Id_Proveedor: this.state.itemsProd[val].Id_Proveedor
+        })
+        //alert(this.state.Nombre_Producto);
+    }
+
+    ToPreviewProd = (e) =>{
         /*this.setState = ({
             [e.target.title]: e.target.value
         })*/
@@ -72,12 +100,12 @@ class Producto extends Component {
             <div className="input-wrapper">
                 <h1>Producto</h1>
                 <form onSubmit={this.ToHistoryProd}>
-                    <Input title="Nombre_Producto" handleChange={this.ToTableProd} type="text"></Input>
-                    <Input title="Descripcion" handleChange={this.ToTableProd} type="text"></Input>
-                    <Input title="Fecha_Vencimiento" handleChange={this.ToTableProd} type="date"></Input>
-                    <Input title="Id_Proveedor" handleChange={this.ToTableProd} type="number"></Input>
-                    <div>
-                        <button type="submit" class="btn btn-secondary">Ejecutar</button>
+                    <Input title="Nombre_Producto" handleChange={this.ToPreviewProd} type="text" data={this.state.Nombre_Producto}></Input>
+                    <Input title="Descripcion" handleChange={this.ToPreviewProd} type="text" data={this.state.Descripcion}></Input>
+                    <Input title="Fecha_Vencimiento" handleChange={this.ToPreviewProd} type="date" data={this.state.Fecha_Vencimiento}></Input>
+                    <Input title="Id_Proveedor" handleChange={this.ToPreviewProd} type="number" data={this.state.Id_Proveedor}></Input>
+                    <div className="button-wrapper">
+                        <button type="submit" className="btn btn-secondary">Ejecutar</button>
                     </div>
                 </form>
             </div>
@@ -98,8 +126,8 @@ class Producto extends Component {
                         <td>{ item.Descripcion }</td>
                         <td>{ item.Fecha_Vencimiento }</td>
                         <td>{ item.Id_Proveedor }</td>
-                        <td><button type="button" class="btn btn-info">Actualizar</button></td>
-                        <td><button type="button" class="btn btn-danger">Eliminar</button></td>
+                        <td><button type="button" class="btn btn-info" onClick={()=>this.ToUpdateProd(item.Id_Producto)}>Actualizar</button></td>
+                        <td><button type="button" class="btn btn-danger" onClick={()=>this.ToDelete(item.Id_Producto)}>Eliminar</button></td>
                         </tr>
                    ))}
                    </tbody>
