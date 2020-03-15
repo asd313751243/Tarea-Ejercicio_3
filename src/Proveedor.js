@@ -7,8 +7,23 @@ class Proveedor extends Component {
     constructor(props){
       super(props)
       this.state ={
-
+        itemsProv: []
       }
+    }
+
+    componentDidMount(){
+      if(localStorage.getItem("HisProv")==null){
+        return null
+      }
+      else{
+        this.FillProvTable();
+      }
+    }
+
+    FillProvTable = () =>{
+      this.setState({
+        itemsProv: JSON.parse(localStorage.getItem("HisProv"))
+    })
     }
 
   ToTableProv = (e) =>{
@@ -31,7 +46,7 @@ class Proveedor extends Component {
     }
 
     let history = {
-      id: ID,
+      Id_Producto: ID,
       Nombre_Proveedor: this.state.Nombre_Proveedor,
       Direccion: this.state.Direccion,
       Numero_Telefono: this.state.Numero_Telefono
@@ -47,7 +62,7 @@ class Proveedor extends Component {
       histories.push(history);
       localStorage.setItem("HisProv", JSON.stringify(histories));
     }
-    console.log(this.state)
+    this.componentDidMount();
   }
 
   render(){
@@ -56,9 +71,9 @@ class Proveedor extends Component {
         <div className="input-wrapper">
           <h1>Proveedor</h1>
           <form onSubmit={this.ToHistoryProv}>
-            <Input title="Nombre_Proveedor" handleChange={this.ToTableProv}></Input>
-            <Input title="Direccion" handleChange={this.ToTableProv}></Input>
-            <Input title="Numero_Telefono" handleChange={this.ToTableProv}></Input>
+            <Input title="Nombre_Proveedor" handleChange={this.ToTableProv} type="text"></Input>
+            <Input title="Direccion" handleChange={this.ToTableProv} type="text"></Input>
+            <Input title="Numero_Telefono" handleChange={this.ToTableProv} type="number"></Input>
             <div>
               <button type="submit" class="btn btn-secondary">Ejecutar</button>
             </div>
@@ -67,10 +82,23 @@ class Proveedor extends Component {
         <div className="table-wrapper">
             <table className="table table-striped table-dark">
                    <thead>
-                        <th>Operations</th>
-                        <th>Results</th>
+                        <th>Id_Proveedor</th>
+                        <th>Nombre_Proveedor</th>
+                        <th>Direccion</th>
+                        <th>Numero_Telefono</th>
                    </thead>
-                   
+                   <tbody>
+                   {this.state.itemsProv.map((item) => (
+                        <tr>
+                        <td>{ item.Id_Proveedor }</td>
+                        <td>{ item.Nombre_Proveedor }</td>
+                        <td>{ item.Direccion }</td>
+                        <td>{ item.Numero_Telefono }</td>
+                        <td><button type="button" class="btn btn-info">Actualizar</button></td>
+                        <td><button type="button" class="btn btn-danger">Eliminar</button></td>
+                        </tr>
+                   ))}
+                   </tbody>
                 </table>       
             </div>
       </div>
