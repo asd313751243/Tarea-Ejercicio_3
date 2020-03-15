@@ -130,18 +130,18 @@ class Proveedor extends Component {
   render(){
     return (
       <div className="Proveedor">
-        <div className="input-wrapper">
+        <div className="inputprov-wrapper">
           <h1>Proveedor</h1>
           <form onSubmit={this.ToHistoryProv}>
             <Input title="Nombre_Proveedor" handleChange={this.ToPreviewProv} type="text" data={this.state.Nombre_Proveedor}></Input>
             <Input title="Direccion" handleChange={this.ToPreviewProv} type="text" data={this.state.Direccion}></Input>
             <Input title="Numero_Telefono" handleChange={this.ToPreviewProv} type="number" data={this.state.Numero_Telefono}></Input>
-            <div className="button-wrapper">
+            <div className="buttonprov-wrapper">
               <button type="submit" class="btn btn-secondary">Ejecutar</button>
             </div>
           </form>
         </div>
-        <div className="table-wrapper">
+        <div className="tableprov-wrapper">
             <table className="table table-striped table-dark">
                    <thead>
                         <th>Id_Proveedor</th>

@@ -16,6 +16,9 @@ class Producto extends Component {
 
     componentDidMount(){
         if(localStorage.getItem("HisProd")==null){
+            this.setState({
+                histories_prov: JSON.parse(localStorage.getItem('HisProv'))
+            })
             return null;
         }
         else{
@@ -80,7 +83,16 @@ class Producto extends Component {
     }
 
     ToUpdateProd = (val) =>{
-        if(this.state.itemsProd.Estado_Producto == "Activo"){
+
+        if(this.state.filtrar.length == 0){
+            for(var i=0; i<this.state.histories_prov.length; i++){
+                if(this.state.histories_prov[i].Estado_Proveedor == "Activo"){
+                    this.state.filtrar.push(this.state.histories_prov[i]);
+                }
+            }
+        }
+
+        if(this.state.itemsProd[val].Estado_Producto == "Activo"){
             this.setState({
                 Id_Producto_update: this.state.itemsProd[val].Id_Producto,
                 Nombre_Producto: this.state.itemsProd[val].Nombre_Producto,
@@ -128,7 +140,7 @@ class Producto extends Component {
   render(){
     return (
         <div className="Producto">
-            <div className="input-wrapper">
+            <div className="inputprod-wrapper">
                 <h1>Producto</h1>
                 <form onSubmit={this.ToHistoryProd}>
                     <Input title="Nombre_Producto" handleChange={this.ToPreviewProd} type="text" data={this.state.Nombre_Producto}></Input>
@@ -140,12 +152,12 @@ class Producto extends Component {
                             <option value={item.Id_Proveedor}>{item.Id_Proveedor} : {item.Nombre_Proveedor} </option>
                         ))} 
                     </select>
-                    <div className="button-wrapper">
+                    <div className="buttonprod-wrapper">
                         <button type="submit" className="btn btn-secondary">Ejecutar</button>
                     </div>
                 </form>
             </div>
-            <div className="table-wrapper">
+            <div className="tableprod-wrapper">
             <table className="table table-striped table-dark">
                    <thead>
                         <th>Id_Producto</th>

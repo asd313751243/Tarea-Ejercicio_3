@@ -2,4 +2,18 @@
   text-align: center;
   justify-content: center;
   display: flex;
+  width: 100.04%;
+}
+
+.inputprov-wrapper{
+  width: 20%;
+  margin-right: 2%;
+}
+
+.tableprov-wrapper{
+  width: 80%;
+}
+
+.buttonprov-wrapper{
+  margin-top: 2%;
 }

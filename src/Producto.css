@@ -2,17 +2,17 @@
     text-align: center;
     justify-content: center;
     display: flex;
-    width: 100%;
+    width: 75.2%;
   }
-  .input-wrapper{
+  .inputprod-wrapper{
       width: 30%;
       margin-right: 2%;
   }
 
-  .table-wrapper{
+  .tableprod-wrapper{
       width: 70%;
   }
 
-  .button-wrapper{
+  .buttonprod-wrapper{
       margin-top: 2%;
   }
